@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Social
 
 class DetailViewController: UIViewController {
 
@@ -18,6 +19,8 @@ class DetailViewController: UIViewController {
         super.viewDidLoad()
         
         title = selectedImage
+        
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(sharedTap))
         
         if let imageToLoad = selectedImage {
             imageView.image = UIImage(named: imageToLoad)
@@ -35,10 +38,27 @@ class DetailViewController: UIViewController {
         navigationController?.hidesBarsOnTap = true
     }
     
+//    //reset hidesBar... else when I tap 'back' and re-enter DetailVC, bar will remain hidden.
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
         navigationController?.hidesBarsOnTap = false
+    }
+    
+    func sharedTap() {
+//        let vc = UIActivityViewController(activityItems: [imageView.image!], applicationActivities: [])
+//        vc.popoverPresentationController?.barButtonItem = navigationItem.rightBarButtonItem
+//        present(vc, animated: true)
+        //show the object item anchored to navigationItem.rightBarButtonItem
+        
+        if let vc = SLComposeViewController(forServiceType: SLServiceTypeTwitter) {
+            
+            vc.setInitialText("This is a great photo!")
+            vc.add(imageView.image!)
+            vc.add(URL(string: "http://www.photolib.noaa.gov/nssl"))
+            
+            present(vc, animated: true)
+        }
     }
 
 }
